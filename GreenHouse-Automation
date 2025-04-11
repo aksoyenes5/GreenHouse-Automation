@@ -1,0 +1,49 @@
+#include <DHT.h>
+
+// DHT22 Ayarları
+#define DHTPIN 14      // DHT22 veri pini
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+// Toprak Nem Sensörü (Analog)
+#define SOIL_MOISTURE_PIN 34  // AO pininden bağla
+
+// LDR Işık Sensörü (Analog)
+#define LDR_PIN 35  // AO pininden bağla
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+  Serial.println("Sensör verileri okunuyor...");
+}
+
+void loop() {
+  // DHT22 Verisi
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  // Analog Veriler
+  int soilMoisture = analogRead(SOIL_MOISTURE_PIN); // 0-4095
+  int lightLevel = analogRead(LDR_PIN);             // 0-4095
+
+  // DHT22 Veri Kontrolü
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println(" DHT22 verisi okunamadı!");
+  } else {
+    Serial.print(" Sıcaklık: ");
+    Serial.print(temperature);
+    Serial.print(" °C\t Nem: ");
+    Serial.print(humidity);
+    Serial.println(" %");
+  }
+
+  // Toprak Nem ve Işık
+  Serial.print(" Toprak Nem (analog): ");
+  Serial.println(soilMoisture);
+
+  Serial.print(" Işık Şiddeti (analog): ");
+  Serial.println(lightLevel);
+
+  Serial.println("-----------------------------");
+  delay(2000);
+}
